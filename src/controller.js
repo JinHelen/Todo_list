@@ -8,7 +8,7 @@ const {
 exports.getTodo = async (req, res) => {
   const id = req.params.id
   const file = await asyncReadFile(req.app.locals.dataFilePath)
-  const Todos = JSON.parse(file).filter(v => v.email === email)
+  const Todos = JSON.parse(file).filter(v => v.id === id)
   Todos.length == 0 ? res.status(404).send() : res.send(Todos[0])
 }
 

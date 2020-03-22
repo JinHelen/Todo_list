@@ -19,7 +19,7 @@ app.get("/api/tasks", getAllTodo)
 
 app.post("/api/tasks", createTodo)
 
-app.delete("/spi/tasks/:id", deleteTodo)
+app.delete("/api/tasks/:id", deleteTodo)
 
 app.listen(port, () => console.log(`our server has been setup,and listen on the port: ${port}!`))
 
