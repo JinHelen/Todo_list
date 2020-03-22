@@ -9,85 +9,50 @@ const request = require('supertest');
 
 describe("app", () => {
   describe("get request", () => {
-    it("should get all accounts when request url pattern is '/accounts'", (done) => {
+    it("should get all todos'", (done) => {
       app.locals.dataFilePath = "./test/fixture.json"
-      request(app).get('/accounts').expect(200).expect([{
-          "name": "Tom",
-          "phoneNumber": 123456,
-          "email": "1@1.com"
-        },
-        {
-          "name": "Jerry",
-          "phoneNumber": 123456,
-          "email": "1@2.com"
-        }
+      request(app).get('/api/tasks/1').expect(200).expect([{
+        "id": 1,
+        "content": "Restful API homework",
+        "createdTime": "2019-05-15T00:00:00Z"
+      },
       ]).end((err, res) => {
-        if (err) throw err;
-        done()
-      })
-    })
-
-    it("should get specific account when request url patten is '/accounts/:email'", (done) => {
-      request(app).get('/accounts/1@2.com').expect(200).expect({
-        "name": "Jerry",
-        "phoneNumber": 123456,
-        "email": "1@2.com"
-      }).end((err, res) => {
         if (err) throw err;
         done()
       })
     })
   })
 
-  describe("post request", () => {
-    afterEach(async function () {
-      await asyncWriteFile(JSON.stringify([{
-          "name": "Tom",
-          "phoneNumber": 123456,
-          "email": "1@1.com"
-        },
-        {
-          "name": "Jerry",
-          "phoneNumber": 123456,
-          "email": "1@2.com"
-        }
-      ]), "./test/fixture.json")
-    })
-    it("should create a account when the corresponding email does not exist in the datasource", (done) => {
-      request(app).post('/accounts').send({
-        "name": "Tom",
-        "phoneNumber": 123456,
-        "email": "1@3.com"
+  describe("add task", () => {
+  
+    it("should create a id when the corresponding id does not exist in the datasource", (done) => {
+      request(app).post('/api/tasks/').send({
+        "id": 2,
+        "content": "Restful API homework2",
+        "createdTime": "2019-05-15T12:00:00Z"
       }).expect(201).expect([{
-          name: 'Tom',
-          phoneNumber: 123456,
-          email: '1@1.com'
-        },
-        {
-          name: 'Jerry',
-          phoneNumber: 123456,
-          email: '1@2.com'
-        },
-        {
-          name: 'Tom',
-          phoneNumber: 123456,
-          email: '1@3.com'
-        }
+        "id": 1,
+        "content": "Restful API homework",
+        "createdTime": "2019-05-15T00:00:00Z"
+      },
+      {
+        "id": 2,
+        "content": "Restful API homework2",
+        "createdTime": "2019-05-15T12:00:00Z"
+      }
       ]).end((err, res) => {
         if (err) throw err;
         done()
       })
     })
 
-    it("should not create the account when its email has already existed in the datasource", (done) => {
-      request(app).post('/accounts').send({
-        "name": "Tom",
-        "phoneNumber": 123456,
-        "email": "1@1.com"
-      }).expect(400).end((err, res) => {
-        if (err) throw err;
-        done()
-      })
-    })
   })
+  describe("delete one task", () => {
+    it("should return all items", (done) => {
+        request(app).delete('/api/tasks/2').expect(204).end((err, res) => {
+            if(err) throw err;
+            done();
+        })
+    })  
+})
 })
